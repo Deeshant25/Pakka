@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pakka – lock in the group trip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E9EEEC; --surface:#FFFFFF; --ink:#14213D; --muted:#5B677A; --line:#D3DBD8;
+  --sea:#0E6E6D; --sea-soft:#D6ECEA; --marigold:#E8961E; --marigold-soft:#FCEBCF; --plum:#7A2E5A; --plum-soft:#F1E1EA;
+  --on-sea:#FFFFFF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F1720; --surface:#18232F; --ink:#E8EEF2; --muted:#9AA8B5; --line:#2A3846;
+    --sea:#3FB3AF; --sea-soft:#163A3C; --marigold:#F2AE48; --marigold-soft:#3A2C14; --plum:#D88AB6; --plum-soft:#3A2030;
+    --on-sea:#0F1720;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F1720; --surface:#18232F; --ink:#E8EEF2; --muted:#9AA8B5; --line:#2A3846;
+  --sea:#3FB3AF; --sea-soft:#163A3C; --marigold:#F2AE48; --marigold-soft:#3A2C14; --plum:#D88AB6; --plum-soft:#3A2030;
+  --on-sea:#0F1720;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:440px;margin:0 auto;padding:20px 16px 48px}
+header.top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.logo{font-weight:800;font-size:1.6rem;letter-spacing:-.02em}
+.logo span{color:var(--sea)}
+.tag{color:var(--muted);font-size:.85rem}
+nav.steps{display:flex;gap:6px;margin:0 0 16px;overflow-x:auto}
+nav.steps button{flex:1 0 auto;border:1px solid var(--line);background:transparent;color:var(--muted);font:inherit;font-size:.78rem;padding:6px 8px;border-radius:999px;cursor:pointer;white-space:nowrap}
+nav.steps button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.card{background:var(--surface);border-radius:20px;padding:22px 20px;border:1px solid var(--line)}
+h1{font-size:1.65rem;line-height:1.15;margin:0 0 6px;font-weight:800;letter-spacing:-.015em}
+h2{font-size:1.05rem;margin:22px 0 10px;font-weight:700}
+p{margin:0 0 12px}
+.sub{color:var(--muted);margin-bottom:18px}
+label{display:block;font-size:.85rem;color:var(--muted);margin:14px 0 5px}
+input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:15px;font:inherit;font-weight:700;font-size:1rem;cursor:pointer;margin-top:18px;background:var(--sea);color:var(--on-sea)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:500;margin-top:10px}
+.btn.warm{background:var(--marigold);color:#1F1400}
+.btn:focus-visible,nav.steps button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--marigold);outline-offset:2px}
+.hint{font-size:.85rem;color:var(--muted);margin-top:8px}
+.rule{background:var(--sea-soft);border-radius:14px;padding:12px 14px;font-size:.92rem;margin-top:16px}
+.wa{background:var(--sea-soft);border-radius:4px 16px 16px 16px;padding:14px;font-size:.95rem;margin:6px 0 4px}
+.wa .link{color:var(--sea);font-weight:700;word-break:break-all}
+.trip{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:14px;margin-top:4px}
+.trip div{font-size:.85rem;color:var(--muted)}
+.trip strong{display:block;color:var(--ink);font-size:1.05rem}
+.meter{margin:18px 0 6px}
+.meter .num{font-size:3.2rem;font-weight:800;line-height:1;letter-spacing:-.03em}
+.meter .num small{font-size:1.1rem;color:var(--muted);font-weight:500;letter-spacing:0}
+.bar{height:14px;background:var(--bg);border-radius:999px;overflow:hidden;margin-top:10px;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--marigold);border-radius:999px;transition:width .5s ease}
+.gap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.gap div{border-radius:14px;padding:12px}
+.gap .said{background:var(--plum-soft)}
+.gap .locked{background:var(--marigold-soft)}
+.gap b{display:block;font-size:1.6rem;line-height:1.1}
+.gap span{font-size:.82rem;color:var(--muted)}
+ul.people{list-style:none;margin:0;padding:0}
+ul.people li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+ul.people li:last-child{border-bottom:0}
+.av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.85rem;background:var(--bg);flex:0 0 auto}
+.st{margin-left:auto;font-size:.8rem;padding:3px 9px;border-radius:999px}
+.st.l{background:var(--marigold-soft)}
+.st.y{background:var(--plum-soft);color:var(--plum)}
+.st.l::before{content:"✓ "}
+.countdown{font-size:.9rem;color:var(--muted)}
+.pay{border:1px dashed var(--line);border-radius:14px;padding:14px;margin-top:16px}
+.pay .amt{font-size:2rem;font-weight:800}
+.stampbox{position:relative;text-align:center;padding:26px 0 8px}
+.stamp{display:inline-block;font-weight:800;font-size:3.4rem;color:var(--sea);border:5px solid var(--sea);border-radius:14px;padding:4px 22px;transform:rotate(-7deg);letter-spacing:-.02em}
+.stamp.no{color:var(--plum);border-color:var(--plum);font-size:2.4rem}
+@media (prefers-reduced-motion:no-preference){
+  .stamp.anim{animation:thunk .45s cubic-bezier(.2,1.6,.4,1) both}
+  @keyframes thunk{from{transform:rotate(-7deg) scale(2.4);opacity:0}to{transform:rotate(-7deg) scale(1);opacity:1}}
+}
+.sum{display:grid;gap:8px;margin:18px 0 0}
+.sum div{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:8px 0;font-size:.95rem}
+.sum div:last-child{border-bottom:0}
+.sum b{font-weight:700}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s}
+.toast.show{opacity:1}
+.demo{margin-top:22px;border-top:1px dashed var(--line);padding-top:14px}
+.demo p{font-size:.82rem;color:var(--muted);margin:0 0 4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo">pakka<span>?</span></div>
+    <div class="tag">Trips that actually happen</div>
+  </header>
+  <nav class="steps" aria-label="Prototype steps">
+    <button data-go="create">1 Create</button>
+    <button data-go="share">2 Share</button>
+    <button data-go="friend">3 Friend joins</button>
+    <button data-go="dash">4 Dashboard</button>
+    <button data-go="result">5 Result</button>
+  </nav>
+  <main id="app" class="card"></main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const S = {
+  screen:'create',
+  trip:{organiser:'Rohan', dest:'Gokarna', dates:'13–15 Nov', cost:4000, min:6, deposit:500, deadline:'Fri 30 Oct, 9 pm'},
+  members:[
+    {n:'Rohan (you)', s:'l'},{n:'Aditi', s:'l'},{n:'Karthik', s:'l'},
+    {n:'Neha', s:'y'},{n:'Varun', s:'y'},{n:'Sneha', s:'y'},{n:'Arjun', s:'y'},
+    {n:'Meera', s:'y'},{n:'Rahul', s:'y'},{n:'Isha', s:'y'},{n:'Dev', s:'y'}
+  ],
+  forced:null
+};
+const rs = n => '₹' + Number(n).toLocaleString('en-IN');
+const locked = () => S.members.filter(m=>m.s==='l').length;
+const app = document.getElementById('app');
+
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),2200)}
+function go(s){S.screen=s;render();window.scrollTo({top:0})}
+
+function create(){
+  const t=S.trip;
+  return `
+  <h1>Plan a trip that only happens if people commit</h1>
+  <p class="sub">Set the minimum headcount. Friends lock their spot with a refundable deposit. No deposits, no trip, and no one’s stuck with the bill.</p>
+  <label for="org">Your name</label><input id="org" value="${t.organiser}">
+  <label for="dest">Where</label><input id="dest" value="${t.dest}">
+  <div class="row">
+    <div><label for="dates">When</label><input id="dates" value="${t.dates}"></div>
+    <div><label for="cost">Cost per person</label><input id="cost" type="number" value="${t.cost}"></div>
+  </div>
+  <div class="row">
+    <div><label for="min">Trip happens if at least</label><select id="min">${[4,5,6,7,8].map(n=>`<option ${n==t.min?'selected':''} value="${n}">${n} people lock in</option>`).join('')}</select></div>
+    <div><label for="dep">Deposit to lock a spot</label><input id="dep" type="number" value="${t.deposit}"></div>
+  </div>
+  <label for="dl">Lock-in deadline</label><input id="dl" value="${t.deadline}">
+  <div class="rule">If fewer than the minimum lock in by the deadline, every deposit is refunded automatically.</div>
+  <button class="btn" id="mk">Create trip</button>`;
+}
+function share(){
+  const t=S.trip;
+  return `
+  <h1>Drop this in the group</h1>
+  <p class="sub">Saying “I’m in” is free. Locking a spot isn’t. This message asks for the money, so you don’t have to.</p>
+  <div class="wa">
+    🏖️ <b>${t.dest}, ${t.dates}</b><br>
+    It’s happening if ${t.min} of us lock in by ${t.deadline}.<br>
+    Lock your spot with ${rs(t.deposit)} (fully refunded if we don’t make it).<br>
+    <span class="link">pakka.trip/${t.dest.toLowerCase().replace(/\s+/g,'-')}-${t.organiser.toLowerCase()}</span>
+  </div>
+  <p class="hint">Shared to “${t.dest} trip 🌊” on WhatsApp</p>
+  <button class="btn" id="cp">Copy invite</button>
+  <button class="btn ghost" id="asf">See what friends see</button>`;
+}
+function friend(){
+  const t=S.trip, me=S.members.find(m=>m.n==='Neha');
+  const done = me.s==='l';
+  return `
+  <p class="hint" style="margin-top:0">Viewing as Neha</p>
+  <h1>${t.organiser}’s planning ${t.dest}</h1>
+  <p class="sub">${t.dates} · about ${rs(t.cost)} per person</p>
+  <div class="meter"><div class="num">${locked()}<small> of ${t.min} locked in</small></div>
+  <div class="bar"><i style="width:${Math.min(100,locked()/t.min*100)}%"></i></div></div>
+  <p class="countdown">Locks or refunds on ${t.deadline}</p>
+  ${done ? `
+    <div class="pay"><b>You’re locked in.</b><p class="hint">${rs(t.deposit)} held. If the trip doesn’t reach ${t.min} people, it comes straight back to you.</p></div>
+    <button class="btn" id="todash">Back to ${t.organiser}’s view</button>` : `
+    <div class="pay">
+      <div class="hint" style="margin-top:0">Deposit to lock your spot</div>
+      <div class="amt">${rs(t.deposit)}</div>
+      <div class="hint">Counts toward your ${rs(t.cost)} share. Refunded in full on ${t.deadline} if the trip doesn’t lock. Leave free until then; after it locks, your deposit covers your seat unless someone takes your spot. Held by our payment partner, not by ${t.organiser}.</div>
+    </div>
+    <button class="btn warm" id="lock">Lock my spot · pay ${rs(t.deposit)} by UPI</button>
+    <button class="btn ghost" id="maybe">Not sure yet</button>`}`;
+}
+function dash(){
+  const t=S.trip, L=locked(), said=S.members.length;
+  const list=[...S.members].sort((a,b)=>(a.s==='l'?0:1)-(b.s==='l'?0:1));
+  const next=S.members.find(m=>m.s==='y');
+  return `
+  <h1>${t.dest}, ${t.dates}</h1>
+  <p class="countdown">Deadline ${t.deadline} · 2 days 6 hrs left</p>
+  <div class="meter"><div class="num">${L}<small> of ${t.min} locked in</small></div>
+  <div class="bar"><i style="width:${Math.min(100,L/t.min*100)}%"></i></div></div>
+  <div class="gap">
+    <div class="said"><b>${said}</b><span>said “I’m in” on WhatsApp</span></div>
+    <div class="locked"><b>${L}</b><span>actually locked a spot</span></div>
+  </div>
+  <p class="hint">Pooled so far: <b>${rs(L*t.deposit)}</b>. You haven’t fronted a rupee.</p>
+  <h2>Who’s in</h2>
+  <ul class="people">${list.map(m=>`<li><span class="av">${m.n[0]}</span>${m.n}<span class="st ${m.s}">${m.s==='l'?'Locked':'Said yes'}</span></li>`).join('')}</ul>
+  ${L>=t.min ? `<button class="btn" id="see">See result</button>` : `
+  <button class="btn ghost" id="nudge">Remind the “said yes” crowd</button>`}
+  <div class="demo">
+    <p>Demo controls</p>
+    ${next && L<t.min ? `<button class="btn ghost" id="sim">Simulate ${next.n} locking in</button>`:''}
+    <button class="btn ghost" id="fail">Skip to deadline with ${L} locked</button>
+  </div>`;
+}
+function result(){
+  const t=S.trip, L=locked();
+  const ok = S.forced==='fail' ? false : L>=t.min;
+  if(ok){
+    const pooled=L*t.deposit, balance=t.cost-t.deposit;
+    return `
+    <div class="stampbox"><span class="stamp anim">Pakka.</span></div>
+    <h1 style="text-align:center;margin-top:14px">${t.dest} is happening</h1>
+    <p class="sub" style="text-align:center">${L} people locked in before the deadline.</p>
+    <div class="sum">
+      <div><span>Pooled deposits</span><b>${rs(pooled)}</b></div>
+      <div><span>Fronted by you</span><b>₹0</b></div>
+      <div><span>Balance per person</span><b>${rs(balance)}</b></div>
+      <div><span>Balance due</span><b>5 Nov, collected by Pakka</b></div>
+    </div>
+    <button class="btn" id="book">Book the stay with pooled money</button>
+    <button class="btn ghost" id="restart">Start over</button>`;
+  }
+  return `
+  <div class="stampbox"><span class="stamp no anim">Not this time</span></div>
+  <h1 style="text-align:center;margin-top:14px">Only ${L} of ${t.min} locked in</h1>
+  <p class="sub" style="text-align:center">The trip didn’t reach its minimum, so it’s off.</p>
+  <div class="sum">
+    <div><span>Refunded to ${L} people</span><b>${rs(L*t.deposit)}</b></div>
+    <div><span>Lost by you</span><b>₹0</b></div>
+    <div><span>Awkward messages sent</span><b>0</b></div>
+  </div>
+  <p class="hint">You found out on ${t.deadline}, not the night before departure.</p>
+  <button class="btn" id="again">Try new dates with the same group</button>
+  <button class="btn ghost" id="restart">Start over</button>`;
+}
+
+function render(){
+  document.querySelectorAll('nav.steps button').forEach(b=>b.classList.toggle('on',b.dataset.go===S.screen));
+  app.innerHTML = {create,share,friend,dash,result}[S.screen]();
+  const on=(id,f)=>{const el=document.getElementById(id); if(el) el.onclick=f;};
+  on('mk',()=>{
+    const v=id=>document.getElementById(id).value;
+    Object.assign(S.trip,{organiser:v('org')||'Rohan',dest:v('dest')||'Gokarna',dates:v('dates'),cost:+v('cost')||6000,min:+v('min'),deposit:+v('dep')||1500,deadline:v('dl')});
+    S.members[0].n=S.trip.organiser+' (you)';
+    go('share');
+  });
+  on('cp',()=>{toast('Invite copied');});
+  on('asf',()=>go('friend'));
+  on('lock',()=>{S.members.find(m=>m.n==='Neha').s='l';toast(`${rs(S.trip.deposit)} paid · spot locked`);render();});
+  on('maybe',()=>toast(`${S.trip.organiser} will see you as “said yes” until you lock in`));
+  on('todash',()=>go('dash'));
+  on('nudge',()=>toast('Reminder sent to everyone who hasn’t locked in'));
+  on('sim',()=>{const n=S.members.find(m=>m.s==='y');n.s='l';toast(`${n.n} locked in`); if(locked()>=S.trip.min){S.forced=null;setTimeout(()=>go('result'),700);} else render();});
+  on('fail',()=>{S.forced='fail';go('result');});
+  on('see',()=>{S.forced=null;go('result');});
+  on('book',()=>toast('Opening stays in '+S.trip.dest+' (not built in prototype)'));
+  on('again',()=>{S.forced=null;go('create');});
+  on('restart',()=>{location.reload();});
+}
+document.querySelectorAll('nav.steps button').forEach(b=>b.onclick=()=>{ if(b.dataset.go==='result' && S.forced!=='fail' && locked()<S.trip.min){S.forced=null;} go(b.dataset.go);});
+render();
+</script>
+</body>
+</html>
